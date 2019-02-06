@@ -35,6 +35,6 @@ else if (document.getElementsByClassName("OraTableContent").length > 0) {
 }
 // Else, return to the search page.
 else {
-    chrome.runtime.sendMessage({"code": "return"});
+    chrome.runtime.sendMessage({"code": "done"});
     document.querySelectorAll("button")[4].click();
 }

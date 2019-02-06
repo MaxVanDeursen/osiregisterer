@@ -1,21 +1,26 @@
 {
-  "name": "Osiris Automatic Signup",
+  "manifest_version": 2,
+  "name": "Osiris Automatic Registration",
   "version": "1.0",
-  "description": "This plugin automatically signs you up to all exams for which you are enrolled to in BrightSpace",
-  "background": {
-    "scripts": [
-      "background.js"
-    ],
-    "persistent": false
+  "description": "Register yourself automatically to all enrolled courses in BrightSpace.",
+  "icons": {
+    "128": "static/icons/icon128.png",
+    "48": "static/icons/icon48.png",
+    "16": "static/icons/icon16.png"
   },
   "browser_action": {
-    "default_icon": "icon.png"
+    "default_icon": "static/icons/icon16.png",
+    "default_popup": "static/popup.html"
+  },
+  "options_page": "static/options.html",
+  "background": {
+    "scripts": ["background-scripts/background.js"],
+    "persistent": false
   },
   "permissions": [
     "storage",
     "tabs",
     "https://*/*",
     "http://*/*"
-  ],
-  "manifest_version": 2
+  ]
 }

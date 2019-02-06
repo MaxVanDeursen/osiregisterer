@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Osiris Automatic Registration Options</title>
+    <script src="../background-scripts/jquery-3.3.1.min.js"></script>
+    <script src="../background-scripts/options.js"></script>
+
+</head>
+<body>
+<h1>Osiris Automatic Registration Options <button type="button" id="clear">Clear!</button><button type="button" id="dummy">Dummy!</button></h1>
+<h2>Preferences</h2>
+<table style="width:20%">
+    <tr>
+        <th><p align="left">Auto Sign Up For Newly Discovered Courses</p></th>
+        <th><input type="checkbox" id = "defaultNormal"/></th>
+    </tr>
+    <tr>
+        <th><p align="left">Auto Sign Up For Resits</p></th>
+        <th><input type="checkbox" id = "defaultResit"/></th>
+    </tr>
+</table>
+
+<h2>Course Preferences</h2>
+<table style="width:40%">
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Automatic Normal</th>
+            <th>Automatic Resit</th>
+        </tr>
+    </thead>
+    <tbody id="courses">
+
+    </tbody>
+</table>
+
+<h2>Exam Preferences</h2>
+<table style="width:40%">
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Date</th>
+            <th>Opportunity</th>
+            <th>Registered</th>
+        </tr>
+    </thead>
+    <tbody id="exams">
+
+    </tbody>
+</table>
+</body>
+</html>
