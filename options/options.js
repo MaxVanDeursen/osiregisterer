@@ -111,7 +111,7 @@ function updateExams(values) {
         var markup = "<tr><th>" + exam.courseCode + "</th>" +
             "<th> " + exam.courseName + "</th>" +
             "<th> " + exam.date + " " + exam.time + " </th>" +
-            "<th> " + opportunity + "</th>" +
+            "<th> " + opportunity + " </th>" +
             "<th><input type='checkbox' id = \"" + (exam.date + exam.time).replace(/[\/,\ ,.,\-]/g, "") + "\" /></th></tr>";
         examTable.append(markup);
         var button = $("#" + (exam.date + exam.time).replace(/[\/,\ ,.,\-]/g, ""));

@@ -4,17 +4,17 @@
   "version": "1.0",
   "description": "Register yourself automatically to all enrolled courses in BrightSpace.",
   "icons": {
-    "128": "static/icons/icon128.png",
-    "48": "static/icons/icon48.png",
-    "16": "static/icons/icon16.png"
+    "128": "icons/icon128.png",
+    "48": "icons/icon48.png",
+    "16": "icons/icon16.png"
   },
   "browser_action": {
-    "default_icon": "static/icons/icon16.png",
-    "default_popup": "static/popup.html"
+    "default_icon": "icons/icon16.png",
+    "default_popup": "popup/popup.html"
   },
-  "options_page": "static/options.html",
+  "options_page": "options/options.html",
   "background": {
-    "scripts": ["background-scripts/background.js"],
+    "scripts": ["packages/lodash.js","background/background.js"],
     "persistent": false
   },
   "permissions": [
