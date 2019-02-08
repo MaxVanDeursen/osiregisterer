@@ -75,26 +75,65 @@ function updateCourses(values) {
     });
 
     courses.forEach(function (course, index) {
-        var markup = "<tr><th>" + course.courseCode + "</th>" +
-            "<th> " + course.courseName + "</th>" +
-            "<th><input type='checkbox' id = \"" + course.courseCode + "-normal\" /></th>" +
-            "<th><input type='checkbox' id = \"" + course.courseCode + "-resit\" /></th></tr>";
-        courseTable.append(markup);
+        let normalButtonId = course.courseCode + "-normal";
+        let resitButtonId = course.courseCode + "-resit";
+        courseTable.append($("<tr>")
+            .append($("<th>")
+                .text(course.courseCode))
+            .append($("<th>")
+                .text(course.courseName))
+            .append($("<th>")
+                .attr("id", normalButtonId)
+                .append($("<button>")
+                    .attr("id", normalButtonId + "0")
+                    .text("No"))
+                .append($("<button>")
+                    .attr("id", normalButtonId + "1")
+                    .text("Yes"))
+                .append($("<button>")
+                    .attr("id", normalButtonId + "2")
+                    .text("Default")))
+            .append($("<th>")
+                .attr("id", resitButtonId)
+                .append($("<button>")
+                    .attr("id", resitButtonId + "0")
+                    .text("No"))
+                .append($("<button>")
+                    .attr("id", resitButtonId + "1")
+                    .text("Yes"))
+                .append($("<button>")
+                    .attr("id", resitButtonId + "2")
+                    .text("Default")))
+        );
 
-        var normalButton = $("#" + course.courseCode + "-normal");
-        normalButton.prop("checked", "normal" in course ? course.normal : values.defaultNormal);
-        normalButton.click(function () {
-            course["normal"] = normalButton.prop("checked");
-            values.courses[index] = course;
-            chrome.storage.sync.set(values);
+
+        $("#" + normalButtonId + course.normal).css('border-style', 'inset').attr('disabled', 'disabled');
+        $("#" + resitButtonId + course.resit).css('border-style', 'inset').attr('disabled', 'disabled');
+
+        $("#" + normalButtonId).click(function (event) {
+            for (var i = 0; i < this.children.length; i++) {
+                if (this.children[i] === event.target) {
+                    $("#" + event.target.id).css('border-style', 'inset').attr('disabled', 'disabled');
+                    course["normal"] = i;
+                    values.courses[index] = course;
+                    chrome.storage.sync.set(values);
+                } else {
+                    $("#" + this.children[i].id).css('border-style', 'outset').removeAttr('disabled');
+                }
+            }
         });
 
-        var resitButton = $("#" + course.courseCode + "-resit");
-        resitButton.prop("checked", "resit" in course ? course.resit : values.defaultResit);
-        resitButton.click(function () {
-            course["resit"] = resitButton.prop("checked");
-            values.courses[index] = course;
-            chrome.storage.sync.set(values);
+        $("#" + resitButtonId).click(function (event) {
+            for (var i = 0; i < this.children.length; i++) {
+                if (this.children[i] === event.target) {
+                    $("#" + event.target.id).css('border-style', 'inset').attr('disabled', 'disabled');
+                    course["resit"] = i;
+                    values.courses[index] = course;
+                    chrome.storage.sync.set(values);
+                } else {
+                    $("#" + this.children[i].id).css('border-style', 'outset').removeAttr('disabled');
+                }
+            }
         });
     });
 }
@@ -107,19 +146,30 @@ function updateExams(values) {
         return a.courseName.localeCompare(b.courseName);
     });
     exams.forEach(function (exam, index) {
-        var opportunity = exam.opportunity === "1" ? "First Attempt" : "Resit";
-        var markup = "<tr><th>" + exam.courseCode + "</th>" +
-            "<th> " + exam.courseName + "</th>" +
-            "<th> " + exam.date + " " + exam.time + " </th>" +
-            "<th> " + opportunity + " </th>" +
-            "<th><input type='checkbox' id = \"" + (exam.date + exam.time).replace(/[\/,\ ,.,\-]/g, "") + "\" /></th></tr>";
-        examTable.append(markup);
-        var button = $("#" + (exam.date + exam.time).replace(/[\/,\ ,.,\-]/g, ""));
-        button.prop("checked", exam.registered);
+        examTable.append($('<tr>')
+            .append($('<th>')
+                .text(exam.courseCode))
+            .append($('<th>')
+                .text(exam.courseName))
+            .append($('<th>')
+                .text(exam.date + " " + exam.time))
+            .append($('<th>')
+                .text(exam.opportunity === "1" ? "First Attempt" : "Resit"))
+            .append($('<th>')
+                .append($('<button>')
+                    .attr('type', 'button')
+                    .attr('id', (exam.date + exam.time).replace(/[\/ .\-]/g, ""))
+                    .css('background-color', exam.registered ? "#d0ff6b" : "#ff6a6a")
+                    .text(exam.registered ? "Yes" : "No")))
+        );
+        var button = $("#" + (exam.date + exam.time).replace(/[\/ .\-]/g, ""));
         button.click(function () {
-            exam["registered"] = button.prop("checked");
-            values.exams[index] = exam;
-            chrome.storage.sync.set(values);
+            button.attr('disabled', 'disabled').text("Processing...").css('background-color', '#777777').css('color', 'white');
+            chrome.runtime.sendMessage({
+                function: exam.registered ? "deregister" : "register",
+                courseCode: exam.courseCode,
+                exam: exam
+            });
         });
     });
 }

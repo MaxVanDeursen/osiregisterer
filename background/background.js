@@ -1,6 +1,5 @@
 var brightspaceURL = "https://brightspace-cc.tudelft.nl/my-courses",
     ssoURL = "https://gatekeeper2.tudelft.nl/openaselect/profiles/saml2/sso/web?",
-    osirisURL = "https://osistud.tudelft.nl/osiris_student/Inschrijven.do",
     registerURL = "https://osistud.tudelft.nl/osiris_student/Inschrijven.do",
     deregisterURL = "https://osistud.tudelft.nl/osiris_student/InschrijvenOverzicht.do";
 
@@ -13,6 +12,10 @@ chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
         registerExams("WM0713TU", []);
     } else if (response.function === "test2") {
         deregisterExams([{courseCode: "WM0713TU", date: "13/03/2019", time: "18.30 - 21.30"}]);
+    } else if (response.function === "register") {
+        registerExams(response.courseCode, [response.exam]);
+    } else if (response.function === "deregister") {
+        deregisterExams([response.exam]);
     }
 });
 
@@ -53,17 +56,17 @@ function registerExams(courseCode, exams) {
     chrome.tabs.create({url: registerURL, active: false}, function (tab) {
         var scriptInjectorListener = injectionListener(tab.id, registerURL, {file: "content-scripts/register.js"});
         let listener = function (response, sender, sendResponse) {
-            if (sender.tab.id === tab.id) {
+            if (sender.tab && sender.tab.id === tab.id) {
                 if (response.phase === "courseLookup") {
                     chrome.tabs.onUpdated.addListener(scriptInjectorListener);
                     sendResponse({"courseCode": courseCode});
                 } else if (response.phase === "lookup") {
                     chrome.tabs.onUpdated.addListener(injectionListener(tab.id, "https://osistud.tudelft.nl/osiris_student/InschrijvenToets.do", {file: "content-scripts/register.js"}));
-                    chrome.storage.sync.get(null, function(values) {
+                    chrome.storage.sync.get(null, function (values) {
                         let savedExams = "exams" in values ? values.exams : [];
                         let savedCourses = "courses" in values ? values.courses : [];
                         let indices = selectExams(response.exams, exams, savedExams, savedCourses, values, true);
-                        chrome.storage.sync.set({exams: _(savedExams.concat(response.exams)).uniqBy(e => [e.date, e.time].join()).value()});
+                        chrome.storage.sync.set({exams: _(response.exams.concat(savedExams)).uniqBy(e => [e.date, e.time].join()).value()});
                         sendResponse({indices: indices});
                     });
                     return true;
@@ -82,14 +85,14 @@ function deregisterExams(exams) {
     chrome.tabs.create({url: deregisterURL, active: false}, function (tab) {
         var scriptInjectorListener = injectionListener(tab.id, deregisterURL, {"file": "content-scripts/deregister.js"});
         let listener = function (response, sender, sendResponse) {
-            if (sender.tab.id === tab.id) {
+            if (sender.tab && sender.tab.id === tab.id) {
                 if (response.phase === "lookup") {
                     chrome.tabs.onUpdated.addListener(scriptInjectorListener);
-                    chrome.storage.sync.get(null, function(values) {
+                    chrome.storage.sync.get(null, function (values) {
                         let savedExams = "exams" in values ? values.exams : [];
                         let savedCourses = "courses" in values ? values.courses : [];
                         let indices = selectExams(response.exams, exams, savedExams, savedCourses, values, false);
-                        chrome.storage.sync.set({exams: _(savedExams.concat(response.exams)).uniqBy(e => [e.date, e.time].join()).value()});
+                        chrome.storage.sync.set({exams: _(response.exams.concat(savedExams)).uniqBy(e => [e.date, e.time].join()).value()});
 
                         let extrCourses = response.exams.map(e => {
                             return {courseCode: e.courseCode, courseName: e.courseName, normal: 2, resit: 2}
@@ -118,7 +121,10 @@ function selectExams(parsedExams, sentExams, savedExams, savedCourses, defaults,
         if (sentExams.filter(e => e.date === exam.date && e.time === exam.time).length > 0) {
             exam.registered = registration;
             indices.push(exam.index);
-        } else if (registration && savedExams.filter(e => e.date === exam.date && e.time === exam.time).length === 0) {
+            return;
+        }
+        let fExams = savedExams.filter(e => e.date === exam.date && e.time === exam.time);
+        if (registration && fExams.length === 0) {
             let fCourses = savedCourses.filter(c => c.courseCode === exam.courseCode);
             switch (exam.opportunity) {
                 case "1":
@@ -139,6 +145,8 @@ function selectExams(parsedExams, sentExams, savedExams, savedCourses, defaults,
                         indices.push(exam.index)
                     }
             }
+        } else if (fExams.length > 0) {
+            exam.registered = fExams[0].registered;
         } else {
             exam.registered = !registration;
         }
