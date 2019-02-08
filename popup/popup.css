@@ -1,0 +1,12 @@
+body {
+    min-width: 160px;
+    min-height: 50px;
+}
+
+button {
+    min-width: 150px;
+    min-height: 20px;
+    text-align: center;
+    align: center;
+    margin-top: 5px;
+}

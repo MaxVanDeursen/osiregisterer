@@ -8,10 +8,6 @@ chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
         updateCourses();
     } else if (response.function === "updateExams") {
         updateExams();
-    } else if (response.function === "test") {
-        registerExams("WM0713TU", []);
-    } else if (response.function === "test2") {
-        deregisterExams([{courseCode: "WM0713TU", date: "13/03/2019", time: "18.30 - 21.30"}]);
     } else if (response.function === "register") {
         registerExams(response.courseCode, [response.exam]);
     } else if (response.function === "deregister") {
