@@ -44,15 +44,21 @@ function updateCourses() {
 function updateExams() {
     chrome.storage.sync.get(["courses"], function (values) {
         var courses = "courses" in values ? values.courses : [];
-        for (var index = 0; index < courses.length; index++) {
-            registerExams(courses[index].courseCode, []);
-        }
-        deregisterExams([]);
+        var currentIndex = 1;
+        let callback = function() {
+            if (currentIndex < courses.length) {
+                registerExams(courses[currentIndex++].courseCode, [], callback)
+            } else {
+                deregisterExams([]);
+            }
+        };
+
+        registerExams(courses[0].courseCode, [], callback);
     });
 }
 
 
-function registerExams(courseCode, exams) {
+function registerExams(courseCode, exams, callback) {
     chrome.tabs.create({url: registerURL, active: false}, function (tab) {
         var scriptInjectorListener = injectionListener(tab.id, registerURL, {file: "content-scripts/register.js"});
         let listener = function (response, sender, sendResponse) {
@@ -73,6 +79,7 @@ function registerExams(courseCode, exams) {
                 } else if (response.phase === "done") {
                     chrome.runtime.onMessage.removeListener(listener);
                     chrome.tabs.remove(tab.id);
+                    typeof callback === 'function' && callback();
                 }
             }
         };
@@ -81,7 +88,7 @@ function registerExams(courseCode, exams) {
     });
 }
 
-function deregisterExams(exams) {
+function deregisterExams(exams, callback) {
     chrome.tabs.create({url: deregisterURL, active: false}, function (tab) {
         var scriptInjectorListener = injectionListener(tab.id, deregisterURL, {"file": "content-scripts/deregister.js"});
         let listener = function (response, sender, sendResponse) {
@@ -107,6 +114,7 @@ function deregisterExams(exams) {
                 } else if (response.phase === "done") {
                     chrome.runtime.onMessage.removeListener(listener);
                     chrome.tabs.remove(tab.id);
+                    typeof callback === 'function' && callback();
                 }
             }
         };
