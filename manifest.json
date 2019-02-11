@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Osiris Automatic Registration",
+  "name": "OsiRegisterer",
   "version": "1.0",
-  "description": "Register yourself automatically to all enrolled courses in BrightSpace.",
+  "description": "Use this app to check for new exams for all your enrolled courses in BrightSpace.",
   "icons": {
     "128": "icons/icon128.png",
     "48": "icons/icon48.png",
@@ -20,7 +20,6 @@
   "permissions": [
     "storage",
     "tabs",
-    "https://*/*",
-    "http://*/*"
+    "https://*.tudelft.nl/*"
   ]
 }

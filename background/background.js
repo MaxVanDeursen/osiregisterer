@@ -1,8 +1,10 @@
+// URLs which are used to register, deregister and update the exams and courses.
 var brightspaceURL = "https://brightspace-cc.tudelft.nl/my-courses",
     ssoURL = "https://gatekeeper2.tudelft.nl/openaselect/profiles/saml2/sso/web?",
     registerURL = "https://osistud.tudelft.nl/osiris_student/Inschrijven.do",
     deregisterURL = "https://osistud.tudelft.nl/osiris_student/InschrijvenOverzicht.do";
 
+// Execute functions when the corresponding messages are received.
 chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
     if (response.function === "updateCourses") {
         updateCourses();
@@ -15,19 +17,27 @@ chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
     }
 });
 
+// When the user selects that an update should be ran on startup of the browser, do so.
 chrome.storage.sync.get(["defaultStartup"], function (values) {
     if (values.defaultStartup) {
         updateCourses(updateExams);
     }
 });
 
+// Add a listener on the first installment of the extension, which sets the defaults to their initial (false) values.
 chrome.runtime.onInstalled.addListener(function (details) {
-   if (details.reason === "install") {
-       chrome.storage.sync.set({"defaultNormal": false, "defaultResit": false, "defaultStartup": false});
-       chrome.runtime.openOptionsPage();
-   }
+    if (details.reason === "install") {
+        chrome.storage.sync.set({"defaultNormal": false, "defaultResit": false, "defaultStartup": false});
+        chrome.runtime.openOptionsPage();
+    }
 });
 
+
+/**
+ * Update the saved courses.
+ *
+ * @param callback A function which is called after the execution of this function is done.
+ */
 function updateCourses(callback) {
     chrome.tabs.create({url: brightspaceURL, active: false}, function (tab) {
         let listener = function (response, sender, sendResponse) {
@@ -51,6 +61,11 @@ function updateCourses(callback) {
     });
 }
 
+/**
+ * Update the saved exams.
+ *
+ * This is done by going through all open exams for each course, as well as the currently registered exams.
+ */
 function updateExams() {
     chrome.storage.sync.get(["courses"], function (values) {
         var courses = "courses" in values ? values.courses : [];
@@ -67,7 +82,15 @@ function updateExams() {
     });
 }
 
-
+/**
+ * Check and register exams for the specified course.
+ *
+ * This function saves exams as well which have not been encountered before.
+ *
+ * @param courseCode    The course code of the course to register the exams for.
+ * @param exams         The exams which have to be registered.
+ * @param callback      A function which is called after the method is done.
+ */
 function registerExams(courseCode, exams, callback) {
     chrome.tabs.create({url: registerURL, active: false}, function (tab) {
         var scriptInjectorListener = injectionListener(tab.id, registerURL, {file: "content-scripts/register.js"});
@@ -98,6 +121,14 @@ function registerExams(courseCode, exams, callback) {
     });
 }
 
+/**
+ * Deregister the exams specified.
+ *
+ * This function also saves exams and courses which have not been encountered before.
+ *
+ * @param exams     An array of exams which are requested to be deregistered.
+ * @param callback  A function which is called after the method is done.
+ */
 function deregisterExams(exams, callback) {
     chrome.tabs.create({url: deregisterURL, active: false}, function (tab) {
         var scriptInjectorListener = injectionListener(tab.id, deregisterURL, {"file": "content-scripts/deregister.js"});
@@ -133,10 +164,20 @@ function deregisterExams(exams, callback) {
     });
 }
 
-function selectExams(parsedExams, sentExams, savedExams, savedCourses, defaults, registration) {
+/**
+ * Select exams which have to be registered or deregistered, depending on the registration boolean
+ * @param parsedExams   The exams that have been parsed from the webpage and have to be either selected or not.
+ * @param requestedExams The exams which have been specifically requested to be selected.
+ * @param savedExams    The exams which have already been saved so far.
+ * @param savedCourses  The courses which have already been saved so far.
+ * @param defaults      The defaults set by the user.
+ * @param registration  Whether selection for registration or deregistration is considered.
+ * @returns {Array}     The array of indices of the exams from parsedExams which have to be selected.
+ */
+function selectExams(parsedExams, requestedExams, savedExams, savedCourses, defaults, registration) {
     let indices = [];
     parsedExams.forEach(function (exam) {
-        if (sentExams.filter(e => e.date === exam.date && e.time === exam.time).length > 0) {
+        if (requestedExams.filter(e => e.date === exam.date && e.time === exam.time).length > 0) {
             exam.registered = registration;
             indices.push(exam.index);
             return;

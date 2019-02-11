@@ -1,8 +1,11 @@
+// When there is a confirmation button, click this.
 if (document.getElementById("confirmButton1")) {
     chrome.runtime.sendMessage({phase: "confirm"}, function() {
         document.getElementById("confirmButton1").click();
     });
 }
+
+// If we can select exams and there is no error, send all exams and click the ones that have to be selected.
 else if (document.getElementsByClassName("OraTableContent").length > 1 && document.getElementsByClassName("OraError").length === 0) {
     var rows = document.getElementsByClassName("OraTableContent")[0].children[0].children;
     chrome.runtime.sendMessage({"phase": "lookup", "exams": parseExams(rows)}, function(response) {
@@ -12,10 +15,18 @@ else if (document.getElementsByClassName("OraTableContent").length > 1 && docume
         document.getElementsByClassName("psbButtonLink")[0].click();
     });
 }
+
+// Execution is done.
 else {
     chrome.runtime.sendMessage({phase: "done"});
 }
 
+
+/**
+ * Parse the exams from a given array of rows.
+ * @param rows      The rows of the table, which has available exams in it.
+ * @returns {Array} An array of exam objects.
+ */
 function parseExams(rows) {
     var exams = [];
     for (index = 1; index < rows.length; index++) {

@@ -1,8 +1,8 @@
 $(function () {
+    // Set the current version from the manifest in the footer.
+    $("#version").text("OsiRegisterer v" + chrome.runtime.getManifest().version);
 
-    var manifest = chrome.runtime.getManifest();
-    $("#version").text("OsiRegisterer v" + manifest.version);
-
+    // Update the tables with the current values.
     chrome.storage.sync.get(null, function (values) {
         updateFields(values);
     });
@@ -22,37 +22,13 @@ $(function () {
     chrome.storage.onChanged.addListener(function (changes, areaName) {
         updateFields(changes)
     });
-
-    $("#clear").click(function () {
-        chrome.storage.sync.clear();
-        chrome.storage.sync.set({
-            "defaultNormal": false,
-            "defaultResit": false
-        })
-    });
-
-    $("#dummy").click(function () {
-        chrome.storage.sync.set({
-            "exams": [{
-                "courseCode": "testCode",
-                "courseName": "testName",
-                "year": "2018",
-                "quarter": 3,
-                "opportunity": "2",
-                "date": "13/03/2019",
-                "time": "18.30 - 21.30",
-                "registered": true
-            }],
-            "courses": [{
-                "courseCode": "testCode",
-                "courseName": "testName"
-            }],
-            "defaultNormal": true,
-            "defaultResit": false
-        });
-    });
 });
 
+/**
+ * Update all fields on the settings page.
+ *
+ * @param changes   the last changes made to the storage.
+ */
 function updateFields(changes) {
     chrome.storage.sync.get(null, function (values) {
         for (var key in changes) {
@@ -77,6 +53,11 @@ function updateFields(changes) {
     });
 }
 
+/**
+ * Update the courses table.
+ *
+ * @param values    the saved courses in the storage.
+ */
 function updateCourses(values) {
     courseTable = $("#courses");
     courseTable.empty();
@@ -153,6 +134,11 @@ function updateCourses(values) {
     });
 }
 
+/**
+ * Update the exam table.
+ *
+ * @param values    the saved values from the storage.
+ */
 function updateExams(values) {
     examTable = $("#exams");
     examTable.empty();
