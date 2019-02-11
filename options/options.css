@@ -63,6 +63,7 @@ th {
 table {
     border: 1px solid black;
     margin-bottom: 1%;
+    width: 100%;
 }
 
 footer {

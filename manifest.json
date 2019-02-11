@@ -15,7 +15,7 @@
   "options_page": "options/options.html",
   "background": {
     "scripts": ["packages/lodash.js","background/background.js"],
-    "persistent": false
+    "persistent": true
   },
   "permissions": [
     "storage",

@@ -10,8 +10,13 @@ $(function () {
     $("#defaultNormal").click(function () {
         chrome.storage.sync.set({"defaultNormal": $("#defaultNormal").prop("checked")});
     });
+
     $("#defaultResit").click(function () {
         chrome.storage.sync.set({"defaultResit": $("#defaultResit").prop("checked")});
+    });
+
+    $("#defaultStartup").click(function() {
+       chrome.storage.sync.set({"defaultStartup": $("#defaultStartup").prop("checked")});
     });
 
     chrome.storage.onChanged.addListener(function (changes, areaName) {
@@ -60,6 +65,8 @@ function updateFields(changes) {
                     $("#defaultResit").prop("checked", "defaultResit" in values ? values.defaultResit : false);
                     updateCourses(values);
                     break;
+                case "defaultStartup":
+                    $("#defaultStartup").prop("checked", "defaultStartup" in values ? values.defaultStartup : false);
                 case "courses":
                     updateCourses(values);
                     break;

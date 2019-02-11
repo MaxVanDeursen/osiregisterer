@@ -15,7 +15,20 @@ chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
     }
 });
 
-function updateCourses() {
+chrome.storage.sync.get(["defaultStartup"], function (values) {
+    if (values.defaultStartup) {
+        updateCourses(updateExams);
+    }
+});
+
+chrome.runtime.onInstalled.addListener(function (details) {
+   if (details.reason === "install") {
+       chrome.storage.sync.set({"defaultNormal": false, "defaultResit": false, "defaultStartup": false});
+       chrome.runtime.openOptionsPage();
+   }
+});
+
+function updateCourses(callback) {
     chrome.tabs.create({url: brightspaceURL, active: false}, function (tab) {
         let listener = function (response, sender, sendResponse) {
             if (sender.url.includes(brightspaceURL) && sender.tab.id === tab.id) {
@@ -28,6 +41,7 @@ function updateCourses() {
                     chrome.storage.sync.set({courses: _.unionBy(courses, response.courses, 'courseCode')});
                     chrome.runtime.onMessage.removeListener(listener);
                     chrome.tabs.remove(sender.tab.id);
+                    typeof callback === 'function' && callback();
                 });
             }
         };
@@ -41,7 +55,7 @@ function updateExams() {
     chrome.storage.sync.get(["courses"], function (values) {
         var courses = "courses" in values ? values.courses : [];
         var currentIndex = 1;
-        let callback = function() {
+        let callback = function () {
             if (currentIndex < courses.length) {
                 registerExams(courses[currentIndex++].courseCode, [], callback)
             } else {
