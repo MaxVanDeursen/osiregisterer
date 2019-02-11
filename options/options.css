@@ -10,7 +10,7 @@ body {
 }
 
 header {
-    background-color: #6EBBBB;
+    background-color: #00A6D6;
     height: 40px;
     margin: auto;
     line-height: 40px;
@@ -67,7 +67,7 @@ table {
 }
 
 footer {
-    background-color: #6EBBBB;
+    background-color: #00A6D6;
     height: 20px;
     margin: auto;
     font-size: 8px;
