@@ -9,56 +9,121 @@
 
 </head>
 <body>
-<h1>Osiris Automatic Registration Options
-    <button type="button" id="clear">Clear!</button>
-    <button type="button" id="dummy">Dummy!</button>
-</h1>
-<h2>Preferences</h2>
-<table style="width:20%">
-    <tr>
-        <th><p align="left">Auto Sign Up For Newly Discovered Courses</p></th>
-        <th><input type="checkbox" id="defaultNormal"/></th>
-    </tr>
-    <tr>
-        <th><p align="left">Auto Sign Up For Resits</p></th>
-        <th><input type="checkbox" id="defaultResit"/></th>
-    </tr>
-</table>
 
-<h2>Course Preferences</h2>
-<table style="width:40%">
-    <thead>
-    <tr>
-        <th>Course Code</th>
-        <th>Course Name</th>
-        <th>Automatic Normal</th>
-        <th>Automatic Resit</th>
-    </tr>
-    </thead>
-    <tbody id="courses">
+<div id="content-temp">
+    <header>
+        OsiRegisterer Settings
+    </header>
+    <nav>
 
-    </tbody>
-</table>
+    </nav>
+    <main>
+        <section id="defaultSection">
+            <div class="innerSection">
+                <div class="optionLeft">
+                    <h2 class="optionHeader">Default Settings</h2>
+                    <p>Set the default behaviour of OsiRegisterer when encountering new exams.</p>
+                </div>
+                <div class="optionRight">
+                    <table>
+                        <tr>
+                            <th><p align="left">Register automatically for the first opportunity of new discovered
+                                exams.</p></th>
+                            <th><input type="checkbox" id="defaultNormal"/></th>
+                        </tr>
+                        <tr>
+                            <th><p align="left">Register automatically for the resit of new discovered exams.</p></th>
+                            <th><input type="checkbox" id="defaultResit"/></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-<h2>Exam Preferences</h2>
-<table style="width:40%">
-    <thead>
-    <tr>
-        <th>Course Code</th>
-        <th>Course Name</th>
-        <th>Date</th>
-        <th>Opportunity</th>
-        <th>Registered</th>
-    </tr>
-    </thead>
-    <tbody id="exams">
+        <section id="courseSection">
+            <div class="innerSection">
+                <div class="optionLeft">
+                    <h2 class="optionHeader">Class Specific Settings</h2>
+                    <p>Set your preferences for both first opportunity as well as resits per course. For each course and
+                        each type of exam, the option is given to adhere to the default setting for the type, or whether
+                        to
+                        enroll or not.</p>
+                </div>
+                <div class="optionRight">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Automatic Normal</th>
+                            <th>Automatic Resit</th>
+                        </tr>
+                        </thead>
+                        <tbody id="courses">
 
-    </tbody>
-</table>
-<div id="credits">The cog wheel on the popup page is made by <a href="https://www.flaticon.com/authors/smashicons"
-                                                                title="Smashicons">Smashicons</a> from <a
-        href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> and is licensed by <a
-        href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0
-    BY</a></div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="examSection">
+            <div class="innerSection">
+                <div class="optionLeft">
+                    <h2>Exam Specific Settings</h2>
+                    <p>Set your enrollment for each exam specifically, overriding the preference set on a course
+                        basis.</p>
+                </div>
+                <div class="optionRight">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Date</th>
+                            <th>Opportunity</th>
+                            <th>Registered</th>
+                        </tr>
+                        </thead>
+                        <tbody id="exams">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section id="creditsSection">
+            <div class="innerSection">
+                <div class="optionLeft">
+                    <h2>Credits</h2>
+                    <p>In the development of this extension, third party images and sources have been used. This section
+                        lists these third party sources.</p>
+                </div>
+                <div class="optionRight">
+                    <table>
+                        <tr>
+                            <p>The cog wheel on the popup page is made by <a
+                                    href="https://www.flaticon.com/authors/smashicons"
+                                    title="Smashicons">Smashicons</a> from <a
+                                    href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> and is
+                                licensed
+                                by <a
+                                        href="http://creativecommons.org/licenses/by/3.0/"
+                                        title="Creative Commons BY 3.0"
+                                        target="_blank">CC 3.0
+                                    BY</a></p>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div id="version"></div>
+        <a href="https://github.com/MaxVanDeursen/osiregisterer" target="_blank"><img src="../icons/github.png"
+                                                                                      id="githubIcon"
+                                                                                      alt="GitHub Logo"/></a>
+    </footer>
+</div>
 </body>
 </html>

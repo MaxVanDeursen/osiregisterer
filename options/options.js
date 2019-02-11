@@ -1,4 +1,8 @@
 $(function () {
+
+    var manifest = chrome.runtime.getManifest();
+    $("#version").text("OsiRegisterer v" + manifest.version);
+
     chrome.storage.sync.get(null, function (values) {
         updateFields(values);
     });
@@ -107,31 +111,35 @@ function updateCourses(values) {
         );
 
 
-        $("#" + normalButtonId + course.normal).css('border-style', 'inset').attr('disabled', 'disabled');
-        $("#" + resitButtonId + course.resit).css('border-style', 'inset').attr('disabled', 'disabled');
+        $("#" + normalButtonId + course.normal).attr('disabled', 'disabled');
+        $("#" + resitButtonId + course.resit).attr('disabled', 'disabled');
 
         $("#" + normalButtonId).click(function (event) {
-            for (var i = 0; i < this.children.length; i++) {
-                if (this.children[i] === event.target) {
-                    $("#" + event.target.id).css('border-style', 'inset').attr('disabled', 'disabled');
-                    course["normal"] = i;
-                    values.courses[index] = course;
-                    chrome.storage.sync.set(values);
-                } else {
-                    $("#" + this.children[i].id).css('border-style', 'outset').removeAttr('disabled');
+            if (event.target !== this) {
+                for (var i = 0; i < this.children.length; i++) {
+                    if (this.children[i] === event.target) {
+                        $("#" + event.target.id).attr('disabled', 'disabled');
+                        course["normal"] = i;
+                        values.courses[index] = course;
+                        chrome.storage.sync.set(values);
+                    } else {
+                        $("#" + this.children[i].id).removeAttr('disabled');
+                    }
                 }
             }
         });
 
         $("#" + resitButtonId).click(function (event) {
-            for (var i = 0; i < this.children.length; i++) {
-                if (this.children[i] === event.target) {
-                    $("#" + event.target.id).css('border-style', 'inset').attr('disabled', 'disabled');
-                    course["resit"] = i;
-                    values.courses[index] = course;
-                    chrome.storage.sync.set(values);
-                } else {
-                    $("#" + this.children[i].id).css('border-style', 'outset').removeAttr('disabled');
+            if (event.target !== this) {
+                for (var i = 0; i < this.children.length; i++) {
+                    if (this.children[i] === event.target) {
+                        $("#" + event.target.id).attr('disabled', 'disabled');
+                        course["resit"] = i;
+                        values.courses[index] = course;
+                        chrome.storage.sync.set(values);
+                    } else {
+                        $("#" + this.children[i].id).removeAttr('disabled');
+                    }
                 }
             }
         });

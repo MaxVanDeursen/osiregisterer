@@ -19,6 +19,5 @@ $(function () {
     })
 
     var manifest = chrome.runtime.getManifest();
-    console.log(manifest);
     $("#version").text("OsiRegisterer v" + manifest.version);
 });

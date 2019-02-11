@@ -1,4 +1,102 @@
+body {
+    border-collapse: collapse;
+}
+
+#content-temp {
+    width: 1100px;
+    min-height:50px;
+    background-color: #EEEEEE;
+    margin: auto;
+}
+
+header {
+    background-color: #6EBBBB;
+    height: 40px;
+    margin: auto;
+    line-height: 40px;
+    text-align: center;
+    font-size: 25px;
+}
+
+main {
+    border: 1px solid #DDDDDD;
+}
+
+section {
+    min-height:20px;
+    border: 1px solid #DDDDDD;
+    overflow: auto;
+    width: 100%;
+}
+
+.innerSection {
+    padding: 1% 2%;
+}
+
+.optionLeft {
+    float: left;
+    width: 28%;
+    margin-right:2%;
+}
+
+.optionRight {
+    float: right;
+    width: 70%;
+}
+
+tr:nth-child(even) {
+    background-color: #DDDDDD;
+}
+
+th, td, table {
+    text-align: left;
+    border: solid black;
+    border-width: 1px 0;
+    border-collapse: collapse;
+}
+
+th {
+    padding: 0px 5px;
+    height: 30px;
+}
+
+table {
+    border: 1px solid black;
+    margin-bottom: 1%;
+}
+
+footer {
+    background-color: #6EBBBB;
+    height: 20px;
+    margin: auto;
+    font-size: 8px;
+}
+
 #credits {
     margin-top: 100px;
     font-size: 8px;
+}
+
+
+#githubIcon {
+    width: 16px;
+    height: 16px;
+    margin: 2px 5px;
+    float: right;
+    cursor: pointer;
+}
+
+#version {
+    float: left;
+    font-size: 8px;
+    line-height: 20px;
+    margin: 0 10px;
+}
+
+button {
+    border-style: outset;
+}
+button:disabled {
+    background-color: #BBBBBB;
+    border-style: inset;
 }
