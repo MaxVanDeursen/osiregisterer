@@ -1,12 +1,64 @@
 body {
-    min-width: 160px;
+    min-width: 200px;
     min-height: 50px;
 }
 
 button {
-    min-width: 150px;
-    min-height: 20px;
+    width: 150px;
+    height: 20px;
     text-align: center;
-    align: center;
-    margin-top: 5px;
+    margin: 15px 10px;
+}
+
+#header {
+    background-color: #6EBBBB;
+    height: 40px;
+}
+
+#headerIcon {
+    width: 30px;
+    height: 30px;
+    margin: 5px 5px;
+    float: left;
+}
+
+#settingsIcon {
+    width: 16px;
+    height: 16px;
+    margin: 12px 5px;
+    float: right;
+    cursor: pointer;
+}
+
+#headerText {
+    line-height: 40px;
+    font-size: 15px;
+    float: left;
+    margin: 0 10px;
+}
+
+#center {
+    padding: 10px 10px;
+    min-height: 100px;
+    background-color: #EEEEEE
+}
+
+#footer {
+    background-color: #6EBBBB;
+    height: 20px;
+}
+
+#githubIcon {
+    width: 16px;
+    height: 16px;
+    margin: 2px 5px;
+    float: right;
+    cursor: pointer;
+}
+
+#version {
+    float: left;
+    font-size: 8px;
+    line-height: 20px;
+    margin: 0 10px;
 }

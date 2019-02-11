@@ -13,4 +13,12 @@ $(function () {
     $("#test2").click(function() {
         chrome.runtime.sendMessage({"function": "test2"});
     })
+
+    $("#settingsIcon").click(function() {
+        chrome.runtime.openOptionsPage();
+    })
+
+    var manifest = chrome.runtime.getManifest();
+    console.log(manifest);
+    $("#version").text("OsiRegisterer v" + manifest.version);
 });
