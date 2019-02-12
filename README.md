@@ -15,7 +15,7 @@ The other way is through cloning this repository. First clone the repository to 
 the guide found [here](https://developer.chrome.com/extensions/getstarted#manifest). In short, the steps can be summed up as follows:
 1. Open `chrome://extensions` in the Chrome browser.
 2. Start the Developer Mode.
-3. Click Load Unpacked and select the cloned folder
+3. Click Load Unpacked and select the cloned folder.
 
 ## Bug Report
 If you have found a bug, please feel so kind to report this by creating an issue [here](https://github.com/MaxVanDeursen/osiregisterer/issues).
@@ -24,4 +24,4 @@ If you have found a bug, please feel so kind to report this by creating an issue
 If you would like to see a feature being added to OsiRegisterer, feel free to request them on the issue page [here](https://github.com/MaxVanDeursen/osiregisterer/issues).
 
 ## Contributing
-If you would like to contribute to OsiRegisterer, feel free to fork this repository and provide Merge Requests!
+If you would like to contribute to OsiRegisterer, feel free to fork this repository and provide Pull Requests!
