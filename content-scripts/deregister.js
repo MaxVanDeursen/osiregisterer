@@ -1,6 +1,10 @@
+if (document.getElementsByClassName("OraError").length > 0) {
+    chrome.runtime.sendMessage({phase: "error", message: document.getElementsByClassName("psbError")[0].innerText});
+}
+
 // When there is a confirmation button, click this.
 if (document.getElementById("confirmButton1")) {
-    chrome.runtime.sendMessage({phase: "confirm"}, function() {
+    chrome.runtime.sendMessage({phase: "confirm"}, function () {
         document.getElementById("confirmButton1").click();
     });
 }
@@ -8,11 +12,15 @@ if (document.getElementById("confirmButton1")) {
 // If we can select exams and there is no error, send all exams and click the ones that have to be selected.
 else if (document.getElementsByClassName("OraTableContent").length > 1 && document.getElementsByClassName("OraError").length === 0) {
     var rows = document.getElementsByClassName("OraTableContent")[0].children[0].children;
-    chrome.runtime.sendMessage({"phase": "lookup", "exams": parseExams(rows)}, function(response) {
-        response.indices.forEach(function(index) {
-            rows[index].children[0].children[0].click();
-        });
-        document.getElementsByClassName("psbButtonLink")[0].click();
+    chrome.runtime.sendMessage({"phase": "lookup", "exams": parseExams(rows)}, function (response) {
+        if (response.indices.length > 0) {
+            response.indices.forEach(function (index) {
+                rows[index].children[0].children[0].click();
+            });
+            document.getElementsByClassName("psbButtonLink")[0].click();
+        } else {
+            chrome.runtime.sendMessage({phase: "done"});
+        }
     });
 }
 

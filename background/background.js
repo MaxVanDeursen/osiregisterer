@@ -69,16 +69,16 @@ function updateCourses(callback) {
 function updateExams() {
     chrome.storage.sync.get(["courses"], function (values) {
         var courses = "courses" in values ? values.courses : [];
-        var currentIndex = 1;
+        var currentIndex = 0;
         let callback = function () {
-            if (currentIndex < courses.length) {
+            if (currentIndex < courses.length - 1) {
                 registerExams(courses[currentIndex++].courseCode, [], callback)
             } else {
-                deregisterExams([]);
+                registerExams(courses[currentIndex++].courseCode, []);
             }
         };
 
-        registerExams(courses[0].courseCode, [], callback);
+        deregisterExams([], callback);
     });
 }
 
@@ -96,6 +96,11 @@ function registerExams(courseCode, exams, callback) {
         var scriptInjectorListener = injectionListener(tab.id, registerURL, {file: "content-scripts/register.js"});
         let listener = function (response, sender, sendResponse) {
             if (sender.tab && sender.tab.id === tab.id) {
+                if (response.phase === "error") {
+                    alert("An error has occurred with the message \"" + response.message + "\"." +
+                        " Please report this to OsiRegisterer, either on GitHub" +
+                        " (github.com/MaxvanDeursen/OsiRegisterer) or through email (OsiRegisterer@gmail.com)");
+                }
                 if (response.phase === "courseLookup") {
                     chrome.tabs.onUpdated.addListener(scriptInjectorListener);
                     sendResponse({"courseCode": courseCode});
@@ -109,7 +114,7 @@ function registerExams(courseCode, exams, callback) {
                         sendResponse({indices: indices});
                     });
                     return true;
-                } else if (response.phase === "done") {
+                } else if (response.phase === "done" || response.phase === "error") {
                     chrome.runtime.onMessage.removeListener(listener);
                     chrome.tabs.remove(tab.id);
                     typeof callback === 'function' && callback();
@@ -135,6 +140,11 @@ function deregisterExams(exams, callback) {
         var foundExams = [];
         let listener = function (response, sender, sendResponse) {
             if (sender.tab && sender.tab.id === tab.id) {
+                if (response.phase === "error") {
+                    alert("An error has occurred with the message \"" + response.message + "\"." +
+                        " Please report this to OsiRegisterer, either on GitHub" +
+                        " (github.com/MaxvanDeursen/OsiRegisterer) or through email (OsiRegisterer@gmail.com)");
+                }
                 if (response.phase === "lookup") {
                     chrome.tabs.onUpdated.addListener(scriptInjectorListener);
                     chrome.storage.sync.get(null, function (values) {
