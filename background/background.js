@@ -132,20 +132,18 @@ function registerExams(courseCode, exams, callback) {
 function deregisterExams(exams, callback) {
     chrome.tabs.create({url: deregisterURL, active: false}, function (tab) {
         var scriptInjectorListener = injectionListener(tab.id, deregisterURL, {"file": "content-scripts/deregister.js"});
+        var foundExams = [];
         let listener = function (response, sender, sendResponse) {
             if (sender.tab && sender.tab.id === tab.id) {
                 if (response.phase === "lookup") {
                     chrome.tabs.onUpdated.addListener(scriptInjectorListener);
                     chrome.storage.sync.get(null, function (values) {
+                        foundExams = response.exams;
                         let savedExams = "exams" in values ? values.exams : [];
                         let savedCourses = "courses" in values ? values.courses : [];
-                        let indices = selectExams(response.exams, exams, savedExams, savedCourses, values, false);
-                        chrome.storage.sync.set({exams: _(response.exams.concat(savedExams)).uniqBy(e => [e.date, e.time].join()).value()});
-
-                        let extrCourses = response.exams.map(e => {
-                            return {courseCode: e.courseCode, courseName: e.courseName, normal: 2, resit: 2}
-                        });
-                        chrome.storage.sync.set({courses: _.unionBy(savedCourses, extrCourses, "courseCode")});
+                        let indices = selectExams(foundExams, exams, savedExams, savedCourses, values, false);
+                        let extraCourses = foundExams.map(e => ({courseCode: e.courseCode, courseName: e.courseName, normal: 2, resit: 2}));
+                        chrome.storage.sync.set({courses: _.unionBy(savedCourses, extraCourses, "courseCode")});
                         sendResponse({indices: indices});
                     });
                     return true;
@@ -155,7 +153,13 @@ function deregisterExams(exams, callback) {
                 } else if (response.phase === "done") {
                     chrome.runtime.onMessage.removeListener(listener);
                     chrome.tabs.remove(tab.id);
-                    typeof callback === 'function' && callback();
+                    chrome.storage.sync.get(["exams"], values => {
+                        var exams = "exams" in values ? values.exams : [];
+                        exams.forEach(e => e.registered = false);
+                        exams = foundExams.concat(_.differenceBy(exams, foundExams, e => e.date + e.time));
+                        chrome.storage.sync.set({exams: exams});
+                        typeof callback === 'function' && callback();
+                    });
                 }
             }
         };
@@ -205,7 +209,13 @@ function selectExams(parsedExams, requestedExams, savedExams, savedCourses, defa
                     }
             }
         } else if (fExams.length > 0) {
-            exam.registered = fExams[0].registered;
+            /*
+            * Update the received exam correctly.
+            * Where registration is concerned, if we see that we already have saved that this exam is registered, copy this.
+            * Where deregistration is concerned, if we see that we already have saved that this exam is registered (but we
+            * still encounter this exam meaning that it is registered, set it to registered.
+            */
+            exam.registered = fExams[0].registered || !registration;
         } else {
             exam.registered = !registration;
         }
