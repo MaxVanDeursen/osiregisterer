@@ -1,3 +1,4 @@
+let debug = false;
 $(function () {
     // Set the current version from the manifest in the footer.
     $("#version").text("OsiRegisterer v" + chrome.runtime.getManifest().version);
@@ -15,13 +16,33 @@ $(function () {
         chrome.storage.sync.set({"defaultResit": $("#defaultResit").prop("checked")});
     });
 
-    $("#defaultStartup").click(function() {
-       chrome.storage.sync.set({"defaultStartup": $("#defaultStartup").prop("checked")});
+    $("#defaultStartup").click(function () {
+        chrome.storage.sync.set({"defaultStartup": $("#defaultStartup").prop("checked")});
     });
 
     chrome.storage.onChanged.addListener(function (changes, areaName) {
         updateFields(changes)
     });
+
+    if (debug) {
+        $("#debugOptions")
+            .append($("<button>")
+                .text("Clear Storage")
+                .click(function () {
+                    chrome.storage.sync.clear();
+                }))
+            .append($("<button>")
+                .text("Clear Courses")
+                .click(function () {
+                    chrome.storage.sync.set({courses: []});
+                }))
+            .append($("<button>")
+                .text("Clear Exams")
+                .click(function () {
+                    chrome.storage.sync.set({exams: []});
+                }));
+
+    }
 });
 
 /**
