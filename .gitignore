@@ -1,1 +1,8 @@
+### IntelliJ IDEA ###
 .idea/
+
+### Node Modules ###
+node_modules/
+
+### Log Files ###
+*.log

@@ -56,8 +56,8 @@ function updateCourses(callback) {
             }
         };
         chrome.runtime.onMessage.addListener(listener);
-        chrome.tabs.onUpdated.addListener(injectionListener(tab.id, brightspaceURL, {"file": "content-scripts/parseCourses.js"}));
-        chrome.tabs.onUpdated.addListener(injectionListener(tab.id, ssoURL, {"file": "content-scripts/ssoLogin.js"}));
+        chrome.tabs.onUpdated.addListener(injectionListener(tab.id, brightspaceURL, {"file": "src/content-scripts/parseCourses.js"}));
+        chrome.tabs.onUpdated.addListener(injectionListener(tab.id, ssoURL, {"file": "src/content-scripts/ssoLogin.js"}));
     });
 }
 
@@ -93,7 +93,7 @@ function updateExams() {
  */
 function registerExams(courseCode, exams, callback) {
     chrome.tabs.create({url: registerURL, active: false}, function (tab) {
-        var scriptInjectorListener = injectionListener(tab.id, registerURL, {file: "content-scripts/register.js"});
+        var scriptInjectorListener = injectionListener(tab.id, registerURL, {file: "src/content-scripts/register.js"});
         let listener = function (response, sender, sendResponse) {
             if (sender.tab && sender.tab.id === tab.id) {
                 if (response.phase === "error") {
@@ -105,7 +105,7 @@ function registerExams(courseCode, exams, callback) {
                     chrome.tabs.onUpdated.addListener(scriptInjectorListener);
                     sendResponse({"courseCode": courseCode});
                 } else if (response.phase === "lookup") {
-                    chrome.tabs.onUpdated.addListener(injectionListener(tab.id, "https://osistud.tudelft.nl/osiris_student/InschrijvenToets.do", {file: "content-scripts/register.js"}));
+                    chrome.tabs.onUpdated.addListener(injectionListener(tab.id, "https://osistud.tudelft.nl/osiris_student/InschrijvenToets.do", {file: "src/content-scripts/register.js"}));
                     chrome.storage.sync.get(null, function (values) {
                         let savedExams = "exams" in values ? values.exams : [];
                         let savedCourses = "courses" in values ? values.courses : [];
@@ -136,7 +136,7 @@ function registerExams(courseCode, exams, callback) {
  */
 function deregisterExams(exams, callback) {
     chrome.tabs.create({url: deregisterURL, active: false}, function (tab) {
-        var scriptInjectorListener = injectionListener(tab.id, deregisterURL, {"file": "content-scripts/deregister.js"});
+        var scriptInjectorListener = injectionListener(tab.id, deregisterURL, {"file": "src/content-scripts/deregister.js"});
         var foundExams = [];
         let listener = function (response, sender, sendResponse) {
             if (sender.tab && sender.tab.id === tab.id) {
