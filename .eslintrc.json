@@ -3,15 +3,19 @@
         "browser": true,
         "es6": true
     },
-    "extends": "google",
+    "extends": ["eslint:recommended", "google"],
     "globals": {
         "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
+        "SharedArrayBuffer": "readonly",
+        "_": false,
+        "chrome": false,
+        "$": false
     },
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
     "rules": {
+        "max-len": [2, 120, 2]
     }
 }
