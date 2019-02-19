@@ -1,0 +1,23 @@
+{
+  "name": "osiregisterer",
+  "version": "1.0.0",
+  "description": "OsiRegisterer is a Chrome extension aimed at students at the Delft University of Technology, which manages registrations of exams for courses to which the student is enrolled in in BrightSpace. It makes use of content scripts to interact with both the BrightSpace and Osiris environment provided by the Delft University of Technology, to create an automated process to register with ease.",
+  "main": "background.js",
+  "scripts": {
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxVanDeursen/osiregisterer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaxVanDeursen/osiregisterer/issues"
+  },
+  "homepage": "https://github.com/MaxVanDeursen/osiregisterer#readme",
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-config-google": "^0.12.0"
+  }
+}
