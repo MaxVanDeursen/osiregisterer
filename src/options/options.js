@@ -68,12 +68,35 @@ function updateFields(changes) {
           case 'courses':
             updateCourses(values);
             break;
-          case 'exams':
+          case 'exams': {
+            const activeExams = removeExpiredExams(values);
             updateExams(values);
+            chrome.storage.sync.set({exams: activeExams});
+          }
         }
       }
     }
   });
+}
+
+/**
+ * Removes the expired exams from the values.exams and returns this.
+ *
+ * @param {Object.<exams>}values  The saved exams in the storage
+ * @return {array}                The exams which are still active (which occur later than today).
+ */
+function removeExpiredExams(values) {
+  const exams = 'exams' in values ? values.exams : [];
+  const today = new Date();
+  for (let index = 0; index < exams.length; index++) {
+    const exam = exams[index];
+    const splitExamDate = exam.date.split('/');
+    const examDate = new Date(splitExamDate[2], parseInt(splitExamDate[1]) - 1, splitExamDate[0]);
+    if (today > examDate) {
+      exams.splice(index);
+    }
+  }
+  return exams;
 }
 
 /**
